@@ -55,7 +55,10 @@ const config: Config = {
           hover: '#367a59',
           pressed: '#20573d',
         },
-      }
+      },
+      fontFamily: {
+        plusJakartaSans: ['Plus Jakarta Sans'],
+      },
     },
   },
   plugins: [],
