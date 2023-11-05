@@ -23,6 +23,7 @@ const config: Config = {
           surface: '#cfdaef',
         },
         neutural: {
+          6: '#262626',
           10: '#FFFFFF',
           20: '#DCDCDC',
           30: '#D5D5D5',
@@ -57,7 +58,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        plusJakartaSans: ['Plus Jakarta Sans'],
+        poppins: ['Poppins'],
       },
     },
   },
