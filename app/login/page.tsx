@@ -1,11 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { BiHide, BiShow } from "react-icons/bi";
 import Introduction from "../components/login/introduction";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { api } from "@/lib/axios";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function Login() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showModal, setShowModal] = useState(true);
 
@@ -14,37 +18,21 @@ export default function Login() {
     password: Yup.string().required("Password harus diisi"),
   });
   const handleLogin = async (values) => {
+    const payload = {
+      username: values.username,
+      password: values.password,
+    };
     try {
-      const response = await fetch('https://dummyjson.com/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-          // expiresInMins: 60, // optional (you can remove or include it based on your need)
-        })
-      });
-  
-      const data = await response.json();
+      const data = await api.post("login", payload);
       console.log(data);
-  
-      if (data && data.token) {
-        localStorage.setItem('token', data.token);
-  
-        // Optional: Redirect user to a dashboard or main page
-        // For this, you'll need react-router-dom's useHistory hook
-        // let history = useHistory();
-        // history.push('/dashboard');
-  
-        console.log('Login successful!');
-      } else {
-        console.error('Login failed. Please check your username and password.');
-      }
+
+      localStorage.setItem("token", data.token);
+      router.push("/dashboard");
     } catch (error) {
-      console.error('An error occurred during login:', error);
+      console.error("An error occurred during login:", error);
+      toast.error("Akun tidak ditemukan");
     }
   };
-  
 
   const checkIfFirstVisit = () => {
     const hasVisitedBefore = localStorage.getItem("hasVisitedBefore");
@@ -95,7 +83,8 @@ export default function Login() {
                   type="text"
                   name="username"
                   className="px-4 py-3 rounded-full w-full text-neutural-90 placeholder-neutural-60 border border-neutural-40 bg-neutural-10 shadow-input"
-                  placeholder="Username" required
+                  placeholder="Username"
+                  required
                 />
                 <ErrorMessage
                   name="username"
@@ -108,10 +97,11 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   className="px-4 py-3 rounded-full w-full text-neutural-90 placeholder-neutural-60 border border-neutural-40 bg-neutural-10 shadow-input pr-10"
-                  placeholder="Password" required
+                  placeholder="Password"
+                  required
                 />
                 <div className="absolute top-4 right-4">
-                  <button onClick={togglePasswordVisibility}>
+                  <button onClick={togglePasswordVisibility} type="button">
                     {showPassword ? (
                       <BiShow className="text-neutural-60 w-5 h-5" />
                     ) : (
@@ -141,6 +131,7 @@ export default function Login() {
               >
                 Masuk
               </button>
+              <Toaster position="top-center" />
             </Form>
           )}
         </Formik>
